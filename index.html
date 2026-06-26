@@ -1,766 +1,995 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caleb Oliva — Architecture & Design</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg:        #0B1220;
-      --bg-2:      #0F1828;
-      --bg-card:   #141E32;
-      --border:    #1D2C44;
-      --text:      #E2DFD8;
-      --muted:     #7A7870;
-      --faint:     #334159;
-      --accent:    #C4C0BA;
-    }
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      color: var(--text);
-      background: var(--bg);
-      overflow-x: hidden;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    img { display: block; width: 100%; height: 100%; object-fit: cover; }
-
-    /* ─── NAV ────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      inset: 0 0 auto 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 52px;
-      transition: background 0.35s, border-bottom 0.35s;
-    }
-
-    nav.scrolled {
-      background: rgba(11,18,32,0.94);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 0.5px solid var(--border);
-    }
-
-    .nav-logo {
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 38px;
-    }
-
-    .nav-links a {
-      font-size: 9.5px;
-      font-weight: 400;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-
-    /* ─── HERO ───────────────────────────────────────── */
-    #hero {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 0 52px;
-      overflow: hidden;
-    }
-
-    .hero-eyebrow {
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 22px;
-    }
-
-    .hero-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(58px, 8.5vw, 114px);
-      font-weight: 300;
-      letter-spacing: 0.025em;
-      line-height: 0.93;
-      color: var(--text);
-      margin-bottom: 30px;
-    }
-
-    .hero-tagline {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .hero-tagline::before {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 0.5px;
-      background: var(--muted);
-      flex-shrink: 0;
-    }
-
-    /* Ghost watermark */
-    .hero-ghost {
-      position: absolute;
-      right: -20px;
-      bottom: -80px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(180px, 24vw, 340px);
-      font-weight: 300;
-      line-height: 1;
-      color: transparent;
-      -webkit-text-stroke: 0.5px rgba(196,192,186,0.065);
-      user-select: none;
-      pointer-events: none;
-    }
-
-    /* Thin vertical line + scroll label */
-    .scroll-indicator {
-      position: absolute;
-      bottom: 0;
-      left: 52px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .scroll-label {
-      font-size: 8px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--faint);
-      writing-mode: vertical-rl;
-    }
-
-    .scroll-line {
-      width: 0.5px;
-      height: 56px;
-      background: linear-gradient(to bottom, var(--faint), transparent);
-      animation: dropLine 2.2s ease-in-out infinite;
-    }
-
-    @keyframes dropLine {
-      0%,100% { opacity: 0.3; transform: scaleY(0.6); }
-      50%      { opacity: 1;   transform: scaleY(1); }
-    }
-
-    /* Coordinates */
-    .hero-coords {
-      position: absolute;
-      bottom: 36px;
-      right: 52px;
-      font-size: 8.5px;
-      letter-spacing: 0.18em;
-      color: var(--faint);
-    }
-
-    /* ─── SHARED SECTION ─────────────────────────────── */
-    section { padding: 112px 52px; position: relative; }
-
-    .section-head {
-      display: flex;
-      align-items: baseline;
-      gap: 18px;
-      margin-bottom: 68px;
-    }
-
-    .s-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 11px;
-      font-weight: 400;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-    }
-
-    .s-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(30px, 3.6vw, 50px);
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      color: var(--text);
-    }
-
-    .s-rule {
-      flex: 1;
-      height: 0.5px;
-      background: var(--border);
-      align-self: center;
-    }
-
-    /* ─── IMAGE PLACEHOLDER ──────────────────────────── */
-    .placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-    }
-
-    .ph-bar {
-      width: 28px;
-      height: 0.5px;
-      background: var(--faint);
-    }
-
-    .ph-text {
-      font-size: 7.5px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-
-    /* ─── WORK ───────────────────────────────────────── */
-    #work { background: var(--bg); }
-
-    .projects { display: flex; flex-direction: column; gap: 88px; }
-
-    .project-card {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 52px;
-      align-items: center;
-    }
-
-    .project-card.flip .p-img  { order: 2; }
-    .project-card.flip .p-info { order: 1; }
-
-    .p-img {
-      aspect-ratio: 4/3;
-      background: var(--bg-card);
-      border: 0.5px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .p-img::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(11,18,32,0.4);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .project-card:hover .p-img::after { opacity: 1; }
-
-    .p-info { padding: 4px 0; }
-
-    .p-num {
-      font-size: 8.5px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .p-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(22px, 2.8vw, 36px);
-      font-weight: 300;
-      line-height: 1.18;
-      color: var(--text);
-      margin-bottom: 14px;
-    }
-
-    .p-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-bottom: 20px;
-    }
-
-    .p-tag {
-      font-size: 7.5px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 0.5px solid var(--border);
-      padding: 3px 9px;
-    }
-
-    .p-desc {
-      font-size: 13px;
-      font-weight: 300;
-      line-height: 1.8;
-      color: var(--muted);
-      margin-bottom: 26px;
-    }
-
-    .p-link {
-      font-size: 8.5px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: gap 0.25s;
-    }
-
-    .p-link::after { content: '→'; }
-    .p-link:hover { gap: 16px; }
-
-    /* ─── BY HAND ─────────────────────────────────────── */
-    #byhand { background: var(--bg-2); }
-
-    .byhand-intro {
-      max-width: 500px;
-      font-size: 13.5px;
-      font-weight: 300;
-      line-height: 1.85;
-      color: var(--muted);
-      margin-top: -36px;
-      margin-bottom: 52px;
-    }
-
-    .hand-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .hand-item { display: flex; flex-direction: column; gap: 9px; }
-
-    .hand-img {
-      aspect-ratio: 3/4;
-      background: var(--bg-card);
-      border: 0.5px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s;
-    }
-
-    .hand-img:hover { border-color: var(--muted); }
-
-    .hand-cap {
-      font-size: 8.5px;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-
-    /* ─── SKETCHBOOK ──────────────────────────────────── */
-    #sketchbook { background: var(--bg); }
-
-    .sketch-intro {
-      max-width: 500px;
-      font-size: 13.5px;
-      font-weight: 300;
-      line-height: 1.85;
-      color: var(--muted);
-      margin-top: -36px;
-      margin-bottom: 52px;
-      font-style: italic;
-    }
-
-    .sketch-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: 180px;
-      gap: 10px;
-    }
-
-    .sk {
-      background: var(--bg-card);
-      border: 0.5px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s;
-    }
-
-    .sk:hover { border-color: var(--muted); }
-    .sk.w2 { grid-column: span 2; }
-    .sk.h2 { grid-row: span 2; }
-
-    /* ─── ABOUT ───────────────────────────────────────── */
-    #about { background: var(--bg-2); }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .about-photo {
-      aspect-ratio: 3/4;
-      background: var(--bg-card);
-      border: 0.5px solid var(--border);
-      position: relative;
-    }
-
-    .about-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 40px;
-      font-weight: 300;
-      line-height: 1.1;
-      color: var(--text);
-      margin-bottom: 28px;
-    }
-
-    .about-bio {
-      font-size: 13.5px;
-      font-weight: 300;
-      line-height: 1.88;
-      color: var(--muted);
-      margin-bottom: 38px;
-    }
-
-    .about-bio p + p { margin-top: 15px; }
-
-    .about-links {
-      display: flex;
-      gap: 26px;
-      flex-wrap: wrap;
-    }
-
-    .about-lnk {
-      font-size: 8.5px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      padding-bottom: 3px;
-      border-bottom: 0.5px solid var(--border);
-      transition: border-color 0.2s;
-    }
-
-    .about-lnk:hover { border-color: var(--accent); }
-
-    /* ─── FOOTER ──────────────────────────────────────── */
-    footer {
-      padding: 40px 52px;
-      border-top: 0.5px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .ft-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 300;
-      letter-spacing: 0.04em;
-      color: var(--text);
-    }
-
-    .ft-center {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .ft-email {
-      font-size: 8.5px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      transition: color 0.2s;
-    }
-
-    .ft-email:hover { color: var(--text); }
-
-    .ft-copy {
-      font-size: 7.5px;
-      letter-spacing: 0.1em;
-      color: var(--faint);
-    }
-
-    .ft-links {
-      display: flex;
-      gap: 22px;
-    }
-
-    .ft-links a {
-      font-size: 8.5px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      transition: color 0.2s;
-    }
-
-    .ft-links a:hover { color: var(--text); }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caleb Oliva — Architecture &amp; Design</title>
+<meta name="description" content="Portfolio of Caleb Alexander Oliva, B.S. Architecture (University of Arkansas, 2026). Residential and adaptive-reuse focus, based in Dallas–Fort Worth. Hand drafting, marker rendering, AutoCAD, Rhino, Revit.">
+<meta name="author" content="Caleb Alexander Oliva">
+<link rel="canonical" href="https://caleboliva.com/">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Caleb Oliva — Architecture &amp; Design">
+<meta property="og:description" content="B.S. Architecture · University of Arkansas, 2026 · Residential &amp; adaptive reuse · Dallas–Fort Worth">
+<meta property="og:url" content="https://caleboliva.com/">
+<meta property="og:image" content="https://caleboliva.com/images/LN_buildingview_1.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   CALEB OLIVA — PORTFOLIO
+   Palette:  ink #0B1220 · ink-2 #393E46 · clay #A27B5C · bone #DCD7C9
+   Type:     Archivo (display) · Manrope (body) · Space Mono (labels)
+   ============================================================ */
+
+:root{
+  --ink:       #0B1220;   /* primary background */
+  --ink-2:     #393E46;   /* secondary surface  */
+  --clay:      #A27B5C;   /* accent — use sparingly */
+  --bone:      #DCD7C9;   /* light text         */
+
+  --bone-dim:  rgba(220,215,201,.62);
+  --bone-soft: rgba(220,215,201,.44);
+  --bone-faint:rgba(220,215,201,.30);
+  --line:      rgba(220,215,201,.13);
+  --line-2:    rgba(220,215,201,.22);
+  --clay-line: rgba(162,123,92,.45);
+
+  --maxw: 1320px;
+  --gutter: clamp(22px, 5vw, 80px);
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+body{
+  font-family:'Manrope', system-ui, sans-serif;
+  font-weight:400;
+  background:var(--ink);
+  color:var(--bone);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+::selection{ background:var(--clay); color:var(--ink); }
+
+/* type helpers ------------------------------------------------ */
+.mono{
+  font-family:'Space Mono', monospace;
+  font-weight:400;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.display{
+  font-family:'Archivo', sans-serif;
+  line-height:.96;
+  letter-spacing:-.02em;
+}
+h1,h2,h3{ font-family:'Archivo', sans-serif; font-weight:700; }
+
+/* layout ------------------------------------------------------ */
+.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter); }
+.section{ padding-block:clamp(80px,11vw,160px); position:relative; }
+
+/* Sheet tag — the "construction set" signature ---------------- */
+.sheet-head{
+  display:flex; align-items:baseline; gap:clamp(14px,3vw,34px);
+  border-top:1px solid var(--line-2);
+  padding-top:20px; margin-bottom:clamp(40px,6vw,76px);
+  flex-wrap:wrap;
+}
+.sheet-no{
+  font-family:'Space Mono', monospace; font-size:12px;
+  letter-spacing:.18em; color:var(--clay); white-space:nowrap;
+}
+.sheet-title{
+  font-family:'Archivo', sans-serif; font-weight:800;
+  font-size:clamp(28px,5.2vw,58px); letter-spacing:-.02em; line-height:1;
+}
+.sheet-note{
+  font-size:13.5px; color:var(--bone-dim); max-width:40ch;
+  margin-left:auto; line-height:1.55; align-self:center;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+nav{
+  position:fixed; inset:0 0 auto 0; z-index:90;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px var(--gutter);
+  transition:background .4s var(--ease), border-color .4s var(--ease), padding .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+nav.scrolled{
+  background:rgba(11,18,32,.82);
+  backdrop-filter:blur(16px) saturate(120%);
+  -webkit-backdrop-filter:blur(16px) saturate(120%);
+  border-bottom:1px solid var(--line);
+  padding-block:14px;
+}
+.brand{ font-family:'Archivo',sans-serif; font-weight:700; font-size:15px; letter-spacing:.02em; }
+.brand span{ color:var(--clay); }
+.nav-links{ display:flex; gap:clamp(20px,2.6vw,40px); list-style:none; }
+.nav-links a{
+  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bone-dim);
+  position:relative; padding:4px 0; transition:color .25s;
+}
+.nav-links a::after{
+  content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+  background:var(--clay); transition:width .35s var(--ease);
+}
+.nav-links a:hover{ color:var(--bone); }
+.nav-links a:hover::after{ width:100%; }
+
+.nav-toggle{
+  display:none; background:none; border:0; cursor:pointer; color:var(--bone);
+  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero{
+  min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  padding:120px var(--gutter) 0; position:relative; overflow:hidden;
+}
+.hero-grid{ max-width:var(--maxw); margin:0 auto; width:100%; }
+.hero-eyebrow{
+  font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--clay);
+  display:flex; align-items:center; gap:14px; margin-bottom:clamp(22px,4vw,40px);
+}
+.hero-eyebrow::before{ content:''; width:38px; height:1px; background:var(--clay); }
+.hero-name{
+  font-family:'Archivo',sans-serif; font-weight:800;
+  font-size:clamp(52px,12vw,168px); line-height:.9; letter-spacing:-.035em;
+  color:var(--bone);
+}
+.hero-name .lt{ font-weight:400; color:var(--bone-soft); }
+.hero-sub{
+  margin-top:clamp(26px,4vw,46px);
+  display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center;
+}
+.hero-sub .tag{
+  font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--bone-dim);
+}
+.hero-sub .dot{ width:4px; height:4px; border-radius:50%; background:var(--clay); }
+.hero-lede{
+  margin-top:clamp(30px,4vw,48px); max-width:46ch;
+  font-size:clamp(15px,1.6vw,18px); color:var(--bone-dim); line-height:1.7;
+}
+.hero-cta{
+  margin-top:clamp(34px,4vw,52px); display:flex; gap:16px; flex-wrap:wrap;
+}
+/* buttons ----------------------------------------------------- */
+.btn{
+  font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.12em;
+  text-transform:uppercase; padding:15px 26px; border:1px solid var(--clay-line);
+  color:var(--bone); display:inline-flex; align-items:center; gap:10px;
+  transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease);
+}
+.btn .arr{ transition:transform .3s var(--ease); }
+.btn:hover{ background:var(--clay); border-color:var(--clay); color:var(--ink); }
+.btn:hover .arr{ transform:translateX(4px); }
+.btn.solid{ background:var(--clay); border-color:var(--clay); color:var(--ink); }
+.btn.solid:hover{ background:transparent; color:var(--bone); }
+
+/* hero ghost sheet number motif */
+.hero-ghost{
+  position:absolute; right:calc(var(--gutter) * -.2); bottom:-4vw;
+  font-family:'Archivo',sans-serif; font-weight:800;
+  font-size:clamp(140px,30vw,460px); line-height:.8; letter-spacing:-.04em;
+  color:transparent; -webkit-text-stroke:1px rgba(162,123,92,.10);
+  user-select:none; pointer-events:none; z-index:-1;
+}
+.scroll-cue{
+  position:absolute; left:var(--gutter); bottom:26px;
+  display:flex; align-items:center; gap:12px;
+  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--bone-soft);
+}
+.scroll-cue .bar{ width:46px; height:1px; background:var(--bone-soft); position:relative; overflow:hidden; }
+.scroll-cue .bar::after{
+  content:''; position:absolute; inset:0; background:var(--clay);
+  transform:translateX(-100%); animation:slide 2.6s var(--ease) infinite;
+}
+@keyframes slide{ 0%{transform:translateX(-100%)} 55%{transform:translateX(0)} 100%{transform:translateX(101%)} }
+
+/* ============================================================
+   WORK
+   ============================================================ */
+.project{
+  display:grid; grid-template-columns:1fr; gap:clamp(26px,3.5vw,56px);
+  align-items:center; padding-block:clamp(48px,6vw,86px);
+  border-top:1px solid var(--line);
+}
+.project:first-of-type{ border-top:0; }
+@media(min-width:880px){
+  .project{ grid-template-columns:1.18fr .82fr; }
+  .project.flip .pj-media{ order:2; }
+  .project.flip .pj-body{ order:1; }
+}
+.pj-media{
+  position:relative; overflow:hidden; background:var(--ink-2);
+  aspect-ratio:4/3; cursor:pointer;
+}
+.pj-media img{
+  width:100%; height:100%; object-fit:cover;
+  transition:transform 1.1s var(--ease), filter 1.1s var(--ease);
+  filter:saturate(.92);
+}
+.pj-media:hover img{ transform:scale(1.045); filter:saturate(1); }
+.pj-media .frame-no{
+  position:absolute; top:16px; left:16px; z-index:2;
+  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.16em;
+  color:var(--bone); background:rgba(11,18,32,.55); backdrop-filter:blur(6px);
+  padding:6px 11px;
+}
+.pj-media .reveal-over{
+  position:absolute; inset:0; background:var(--ink); z-index:3;
+  transform-origin:right; transition:transform 1.1s var(--ease);
+}
+.pj-media.shown .reveal-over{ transform:scaleX(0); }
+
+.pj-body .pj-index{ font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.18em; color:var(--clay); margin-bottom:18px; }
+.pj-title{
+  font-family:'Archivo',sans-serif; font-weight:700;
+  font-size:clamp(26px,3.4vw,42px); line-height:1.04; letter-spacing:-.02em;
+  margin-bottom:18px;
+}
+.pj-meta{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+.chip{
+  font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--bone-dim);
+  border:1px solid var(--line-2); padding:5px 11px;
+}
+.pj-desc{ font-size:15px; color:var(--bone-dim); line-height:1.72; margin-bottom:26px; max-width:48ch; }
+.pj-soft{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.08em; color:var(--bone-soft); margin-bottom:26px; }
+.pj-soft b{ color:var(--bone); font-weight:400; }
+.link-underline{
+  font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--bone);
+  display:inline-flex; align-items:center; gap:10px; cursor:pointer;
+  background:none; border:0; padding:0;
+}
+.link-underline .ln{ position:relative; }
+.link-underline .ln::after{
+  content:''; position:absolute; left:0; bottom:-4px; height:1px; width:100%;
+  background:var(--clay); transform:scaleX(0); transform-origin:left;
+  transition:transform .4s var(--ease);
+}
+.link-underline:hover .ln::after{ transform:scaleX(1); }
+.link-underline .arr{ color:var(--clay); transition:transform .3s var(--ease); }
+.link-underline:hover .arr{ transform:translateX(5px); }
+
+/* ============================================================
+   BY HAND  (editorial grid)
+   ============================================================ */
+.hand-grid{
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:clamp(14px,2vw,26px);
+}
+@media(min-width:760px){ .hand-grid{ grid-template-columns:repeat(3,1fr); } }
+.hand-item{ position:relative; overflow:hidden; cursor:pointer; background:var(--ink-2); aspect-ratio:3/4; }
+.hand-item.wide{ grid-column:span 2; aspect-ratio:auto; }
+@media(min-width:760px){ .hand-item.tall{ grid-row:span 2; aspect-ratio:3/5; } }
+.hand-item img{ width:100%; height:100%; object-fit:cover; transition:transform 1s var(--ease), filter 1s var(--ease); }
+.hand-item:hover img{ transform:scale(1.05); }
+.hand-cap{
+  position:absolute; left:0; right:0; bottom:0; padding:16px;
+  background:linear-gradient(to top, rgba(11,18,32,.9), transparent);
+  opacity:0; transform:translateY(8px); transition:opacity .4s var(--ease), transform .4s var(--ease);
+}
+.hand-item:hover .hand-cap{ opacity:1; transform:translateY(0); }
+.hand-cap .t{ font-family:'Archivo',sans-serif; font-weight:600; font-size:14px; }
+.hand-cap .s{ font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--clay); margin-top:3px; }
+
+/* ============================================================
+   SKETCHBOOK  (dense justified grid)
+   ============================================================ */
+.sketch-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:10px;
+}
+@media(min-width:620px){ .sketch-grid{ grid-template-columns:repeat(3,1fr); } }
+@media(min-width:980px){ .sketch-grid{ grid-template-columns:repeat(4,1fr); } }
+.sub-label{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); margin-bottom:18px; }
+.pano{
+  display:flex; gap:0; overflow-x:auto; padding-bottom:16px; cursor:grab;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin; scrollbar-color:var(--clay-line) transparent;
+}
+.pano.dragging{ cursor:grabbing; }
+.pano::-webkit-scrollbar{ height:6px; }
+.pano::-webkit-scrollbar-track{ background:var(--line); }
+.pano::-webkit-scrollbar-thumb{ background:var(--clay-line); border-radius:3px; }
+.pano figure{ flex:0 0 auto; height:clamp(230px,44vh,460px); overflow:hidden; background:var(--ink-2); }
+.pano img{ height:100%; width:auto; display:block; user-select:none; -webkit-user-drag:none; filter:saturate(.96); transition:filter .4s var(--ease); }
+.pano figure:hover img{ filter:saturate(1.06); }
+.sketch-grid.two{ grid-template-columns:repeat(2,1fr); max-width:560px; }
+.sk-item{ position:relative; overflow:hidden; cursor:pointer; aspect-ratio:3/4; background:var(--ink-2); }
+.sk-item img{ width:100%; height:100%; object-fit:cover; transition:transform .9s var(--ease), opacity .4s; opacity:.94; }
+.sk-item:hover img{ transform:scale(1.06); opacity:1; }
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about-grid{ display:grid; grid-template-columns:1fr; gap:clamp(34px,5vw,72px); align-items:start; }
+@media(min-width:880px){ .about-grid{ grid-template-columns:.8fr 1.2fr; } }
+.about-portrait{ position:relative; overflow:hidden; aspect-ratio:4/5; background:var(--ink-2); }
+.about-portrait img{ width:100%; height:100%; object-fit:cover; transition:transform 1.2s var(--ease); }
+.about-portrait:hover img{ transform:scale(1.04); }
+.about-portrait .tag{
+  position:absolute; bottom:0; left:0; padding:14px 18px;
+  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bone); background:rgba(11,18,32,.6); backdrop-filter:blur(6px);
+}
+.about-lead{ font-family:'Archivo',sans-serif; font-weight:500; font-size:clamp(20px,2.5vw,30px); line-height:1.3; letter-spacing:-.01em; margin-bottom:30px; }
+.about-lead em{ font-style:normal; color:var(--clay); }
+.about-body p{ font-size:15.5px; color:var(--bone-dim); line-height:1.78; margin-bottom:18px; max-width:62ch; }
+.about-facts{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line-2); margin-top:36px; border:1px solid var(--line-2); }
+.fact{ background:var(--ink); padding:18px 20px; }
+.fact .k{ font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); margin-bottom:6px; }
+.fact .v{ font-size:14.5px; color:var(--bone); }
+
+/* ============================================================
+   EXPERIENCE  (timeline list)
+   ============================================================ */
+.exp-list{ border-top:1px solid var(--line); }
+.exp-row{
+  display:grid; grid-template-columns:1fr; gap:6px 30px;
+  padding:26px 0; border-bottom:1px solid var(--line);
+  transition:padding-left .4s var(--ease);
+}
+@media(min-width:760px){ .exp-row{ grid-template-columns:130px 1fr auto; align-items:baseline; } }
+.exp-row:hover{ padding-left:14px; }
+.exp-yr{ font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.1em; color:var(--clay); }
+.exp-role{ font-family:'Archivo',sans-serif; font-weight:600; font-size:clamp(17px,2vw,21px); }
+.exp-role span{ display:block; font-family:'Manrope',sans-serif; font-weight:400; font-size:14px; color:var(--bone-dim); margin-top:4px; max-width:60ch; line-height:1.6; }
+.exp-org{ font-family:'Space Mono',monospace; font-size:11.5px; letter-spacing:.06em; color:var(--bone-soft); text-transform:uppercase; }
+
+/* ============================================================
+   SKILLS
+   ============================================================ */
+.skills-grid{ display:grid; grid-template-columns:1fr; gap:clamp(30px,4vw,56px); }
+@media(min-width:760px){ .skills-grid{ grid-template-columns:repeat(3,1fr); } }
+.skill-col h4{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--line-2); }
+.skill-col ul{ list-style:none; }
+.skill-col li{ display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding:11px 0; border-bottom:1px solid var(--line); font-size:15px; }
+.skill-col li .lvl{ font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--bone-soft); }
+.skill-col li.primary .nm{ color:var(--bone); }
+.skill-col li.primary .lvl{ color:var(--clay); }
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+#contact{ text-align:center; }
+.contact-eyebrow{ font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--clay); margin-bottom:24px; }
+.contact-head{
+  font-family:'Archivo',sans-serif; font-weight:800;
+  font-size:clamp(36px,7vw,96px); line-height:.96; letter-spacing:-.03em; margin-bottom:18px;
+}
+.contact-head a{ position:relative; }
+.contact-head a::after{ content:''; position:absolute; left:0; bottom:.06em; height:2px; width:100%; background:var(--clay); transform:scaleX(0); transform-origin:left; transition:transform .5s var(--ease); }
+.contact-head a:hover::after{ transform:scaleX(1); }
+.contact-sub{ color:var(--bone-dim); font-size:16px; max-width:48ch; margin:0 auto 40px; line-height:1.7; }
+.contact-links{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
+.foot-grid{ max-width:var(--maxw); margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; }
+.foot-brand{ font-family:'Archivo',sans-serif; font-weight:700; font-size:16px; }
+.foot-brand span{ color:var(--clay); }
+.foot-meta{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.1em; color:var(--bone-soft); text-transform:uppercase; }
+.foot-links{ display:flex; gap:24px; }
+.foot-links a{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--bone-dim); position:relative; }
+.foot-links a::after{ content:''; position:absolute; left:0; bottom:-4px; height:1px; width:0; background:var(--clay); transition:width .3s var(--ease); }
+.foot-links a:hover{ color:var(--bone); }
+.foot-links a:hover::after{ width:100%; }
+
+/* ============================================================
+   LIGHTBOX / PROJECT OVERLAY
+   ============================================================ */
+.overlay{
+  position:fixed; inset:0; z-index:200; background:rgba(11,18,32,.97);
+  backdrop-filter:blur(8px); opacity:0; visibility:hidden;
+  transition:opacity .4s var(--ease), visibility .4s var(--ease);
+  overflow-y:auto;
+}
+.overlay.open{ opacity:1; visibility:visible; }
+.ov-close{
+  position:fixed; top:18px; right:var(--gutter); z-index:210;
+  background:none; border:1px solid var(--line-2); color:var(--bone); cursor:pointer;
+  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  padding:11px 16px; transition:background .3s, color .3s, border-color .3s;
+}
+.ov-close:hover{ background:var(--clay); color:var(--ink); border-color:var(--clay); }
+
+.ov-inner{ max-width:1080px; margin:0 auto; padding:96px var(--gutter) 100px; }
+.ov-tag{ font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.18em; color:var(--clay); margin-bottom:18px; }
+.ov-title{ font-family:'Archivo',sans-serif; font-weight:800; font-size:clamp(30px,5vw,58px); line-height:1; letter-spacing:-.02em; margin-bottom:22px; }
+.ov-meta{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px; }
+.ov-process{ font-size:16px; color:var(--bone-dim); line-height:1.8; max-width:62ch; margin-bottom:14px; }
+.ov-soft{ font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.06em; color:var(--bone-soft); margin-bottom:54px; }
+.ov-soft b{ color:var(--bone); font-weight:400; }
+.ov-images{ display:flex; flex-direction:column; gap:clamp(16px,2.5vw,34px); }
+.ov-images figure{ background:var(--ink); }
+.ov-images img{ width:100%; height:auto; }
+.ov-images figcaption{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--bone-soft); margin-top:10px; }
+
+/* single-image lightbox */
+.imgbox{
+  position:fixed; inset:0; z-index:220; background:rgba(11,18,32,.98);
+  display:flex; align-items:center; justify-content:center; padding:60px var(--gutter);
+  opacity:0; visibility:hidden; transition:opacity .35s var(--ease), visibility .35s var(--ease);
+}
+.imgbox.open{ opacity:1; visibility:visible; }
+.imgbox img{ max-width:100%; max-height:84vh; object-fit:contain; box-shadow:0 30px 80px rgba(0,0,0,.5); }
+.imgbox .nav-btn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  background:none; border:0; color:var(--bone-dim); cursor:pointer;
+  font-family:'Space Mono',monospace; font-size:30px; padding:20px; transition:color .25s;
+}
+.imgbox .nav-btn:hover{ color:var(--clay); }
+.imgbox .prev{ left:6px; } .imgbox .next{ right:6px; }
+.imgbox .ib-close{ position:absolute; top:18px; right:var(--gutter); }
+.imgbox .ib-count{ position:absolute; bottom:22px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; color:var(--bone-soft); }
+.imgbox .ib-cap{ position:absolute; bottom:46px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--clay); text-align:center; max-width:80%; }
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal{ opacity:0; transform:translateY(26px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
+.reveal.in{ opacity:1; transform:none; }
+.reveal.d1{ transition-delay:.08s; }
+.reveal.d2{ transition-delay:.16s; }
+.reveal.d3{ transition-delay:.24s; }
+
+@media(prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+  .reveal{ opacity:1; transform:none; }
+  html{ scroll-behavior:auto; }
+}
+
+/* ============================================================
+   RESPONSIVE NAV
+   ============================================================ */
+@media(max-width:760px){
+  .nav-links{
+    position:fixed; inset:0 0 0 auto; width:min(78vw,320px);
+    background:var(--ink-2); flex-direction:column; justify-content:center;
+    gap:30px; padding:0 40px; transform:translateX(100%);
+    transition:transform .45s var(--ease); z-index:95; border-left:1px solid var(--line-2);
+  }
+  .nav-links.open{ transform:translateX(0); }
+  .nav-links a{ font-size:14px; }
+  .nav-toggle{ display:inline-block; z-index:96; }
+}
+</style>
 </head>
 <body>
 
-  <!-- ── NAV ─────────────────────────────────────────── -->
-  <nav id="nav">
-    <div class="nav-logo">Caleb Oliva</div>
-    <ul class="nav-links">
-      <li><a href="#work">Work</a></li>
-      <li><a href="#byhand">By Hand</a></li>
-      <li><a href="#sketchbook">Sketchbook</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="mailto:caleboliva07@gmail.com">Contact</a></li>
-    </ul>
-  </nav>
+<!-- ===================== NAV ===================== -->
+<nav id="nav">
+  <a class="brand" href="#hero">Caleb&nbsp;Oliva<span>.</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#hand">By Hand</a></li>
+    <li><a href="#sketchbook">Sketchbook</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+</nav>
 
-  <!-- ── HERO ────────────────────────────────────────── -->
-  <section id="hero">
-    <div class="hero-eyebrow">Architecture &amp; Design &nbsp;·&nbsp; Dallas–Fort Worth</div>
-    <h1 class="hero-name">Caleb<br>Alexander<br>Oliva</h1>
-    <div class="hero-tagline">B.S. Architecture &nbsp;·&nbsp; University of Arkansas &nbsp;·&nbsp; 2026</div>
-    <div class="hero-ghost">CO</div>
-    <div class="scroll-indicator">
-      <span class="scroll-label">Scroll</span>
-      <div class="scroll-line"></div>
+<!-- ===================== HERO ===================== -->
+<header id="hero">
+  <div class="hero-ghost" aria-hidden="true">CO</div>
+  <div class="hero-grid">
+    <p class="hero-eyebrow">Architecture &amp; Design — Portfolio 2026</p>
+    <h1 class="hero-name">Caleb<br><span class="lt">Alexander</span> Oliva</h1>
+    <div class="hero-sub">
+      <span class="tag">B.S. Architecture</span><span class="dot"></span>
+      <span class="tag">University of Arkansas, 2026</span><span class="dot"></span>
+      <span class="tag">Dallas–Fort Worth</span>
     </div>
-    <div class="hero-coords">32°N &nbsp;·&nbsp; 97°W</div>
-  </section>
-
-  <!-- ── WORK ────────────────────────────────────────── -->
-  <section id="work">
-    <div class="section-head">
-      <span class="s-num">01</span>
-      <h2 class="s-title">Selected Work</h2>
-      <div class="s-rule"></div>
+    <p class="hero-lede">A designer who works most naturally by hand — drawn to residential work and the adaptive reuse of existing spaces, where a place already carrying history is imagined into better light, proportion, and purpose.</p>
+    <div class="hero-cta">
+      <a href="#work" class="btn solid">View Work <span class="arr">→</span></a>
+      <a href="resume_2026_OlivaCaleb.pdf" target="_blank" rel="noopener" class="btn">Résumé (PDF) <span class="arr">↓</span></a>
     </div>
+  </div>
+  <div class="scroll-cue"><span class="bar"></span> Scroll</div>
+</header>
 
-    <div class="projects">
-
-      <div class="project-card">
-        <div class="p-img">
-          <!-- Replace with: <img src="images/nevelson-cover.jpg" alt="Nevelson Skyscraper"> -->
-          <div class="placeholder">
-            <div class="ph-bar"></div>
-            <div class="ph-text">Project Image</div>
-            <div class="ph-bar"></div>
-          </div>
-        </div>
-        <div class="p-info">
-          <div class="p-num">Project 01</div>
-          <h3 class="p-title">Louise Nevelson–Inspired Skyscraper &amp; Ground Design</h3>
-          <div class="p-tags">
-            <span class="p-tag">Rhino</span>
-            <span class="p-tag">Mixed-Use</span>
-            <span class="p-tag">Conceptual</span>
-          </div>
-          <p class="p-desc">A formal vocabulary extracted from a focused area of Nevelson's sculpture, translated into facade composition and ground plane design — where artistic language and architectural function converge without either losing its integrity.</p>
-          <a href="#" class="p-link">View Project</a>
-        </div>
-      </div>
-
-      <div class="project-card flip">
-        <div class="p-img">
-          <!-- Replace with: <img src="images/beaver-lake-cover.jpg" alt="Beaver Lake Retreat"> -->
-          <div class="placeholder">
-            <div class="ph-bar"></div>
-            <div class="ph-text">Project Image</div>
-            <div class="ph-bar"></div>
-          </div>
-        </div>
-        <div class="p-info">
-          <div class="p-num">Project 02</div>
-          <h3 class="p-title">Beaver Lake Artist Retreat</h3>
-          <div class="p-tags">
-            <span class="p-tag">Rhino</span>
-            <span class="p-tag">Residential</span>
-            <span class="p-tag">Site Design</span>
-          </div>
-          <p class="p-desc">A retreat campus along an existing Arkansas lakeside, weaving co-op studios, communal dining, individual cabins, and recreational space into a cohesive landscape shaped by the terrain and the rhythms of the creative life it was built to support.</p>
-          <a href="#" class="p-link">View Project</a>
-        </div>
-      </div>
-
-      <div class="project-card">
-        <div class="p-img">
-          <!-- Replace with: <img src="images/light-cover.jpg" alt="Light in Space"> -->
-          <div class="placeholder">
-            <div class="ph-bar"></div>
-            <div class="ph-text">Project Image</div>
-            <div class="ph-bar"></div>
-          </div>
-        </div>
-        <div class="p-info">
-          <div class="p-num">Project 03</div>
-          <h3 class="p-title">Interior Architecture: Light in Space</h3>
-          <div class="p-tags">
-            <span class="p-tag">Revit</span>
-            <span class="p-tag">Interior</span>
-            <span class="p-tag">Lighting Systems</span>
-          </div>
-          <p class="p-desc">An investigation of light as a design medium — choreographing brilliance, task illumination, and ambient wash within an existing building to transform how a space is felt, not just seen.</p>
-          <a href="#" class="p-link">View Project</a>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── BY HAND ──────────────────────────────────────── -->
-  <section id="byhand">
-    <div class="section-head">
-      <span class="s-num">02</span>
-      <h2 class="s-title">By Hand</h2>
-      <div class="s-rule"></div>
-    </div>
-    <p class="byhand-intro">Sketching and marker rendering are where I think — not just document. These pieces represent the part of the design process that lives before the screen: observation, intuition, and line.</p>
-
-    <div class="hand-grid">
-
-      <div class="hand-item">
-        <div class="hand-img">
-          <!-- Replace with: <img src="images/rendering-01.jpg" alt=""> -->
-          <div class="placeholder"><div class="ph-bar"></div><div class="ph-text">Rendering</div><div class="ph-bar"></div></div>
-        </div>
-        <span class="hand-cap">Marker Rendering</span>
-      </div>
-
-      <div class="hand-item">
-        <div class="hand-img">
-          <!-- Replace with: <img src="images/rendering-02.jpg" alt=""> -->
-          <div class="placeholder"><div class="ph-bar"></div><div class="ph-text">Rendering</div><div class="ph-bar"></div></div>
-        </div>
-        <span class="hand-cap">Marker Rendering</span>
-      </div>
-
-      <div class="hand-item">
-        <div class="hand-img">
-          <!-- Replace with: <img src="images/travel-01.jpg" alt=""> -->
-          <div class="placeholder"><div class="ph-bar"></div><div class="ph-text">Travel Sketch</div><div class="ph-bar"></div></div>
-        </div>
-        <span class="hand-cap">Travel Week · 2025 — Selected for Display</span>
-      </div>
-
-      <div class="hand-item">
-        <div class="hand-img">
-          <!-- Replace with: <img src="images/travel-02.jpg" alt=""> -->
-          <div class="placeholder"><div class="ph-bar"></div><div class="ph-text">Travel Sketch</div><div class="ph-bar"></div></div>
-        </div>
-        <span class="hand-cap">Travel Week · 2025</span>
-      </div>
-
-      <div class="hand-item">
-        <div class="hand-img">
-          <!-- Replace with: <img src="images/drafting-01.jpg" alt=""> -->
-          <div class="placeholder"><div class="ph-bar"></div><div class="ph-text">Hand Draft</div><div class="ph-bar"></div></div>
-        </div>
-        <span class="hand-cap">Hand Drafting</span>
-      </div>
-
-      <div class="hand-item">
-        <div class="hand-img">
-          <!-- Replace with: <img src="images/rendering-03.jpg" alt=""> -->
-          <div class="placeholder"><div class="ph-bar"></div><div class="ph-text">Rendering</div><div class="ph-bar"></div></div>
-        </div>
-        <span class="hand-cap">Marker Rendering</span>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── SKETCHBOOK ──────────────────────────────────── -->
-  <section id="sketchbook">
-    <div class="section-head">
-      <span class="s-num">03</span>
-      <h2 class="s-title">Sketchbook</h2>
-      <div class="s-rule"></div>
-    </div>
-    <p class="sketch-intro">Smaller works, studies, and things that don't need explaining — just looking.</p>
-
-    <div class="sketch-grid">
-      <!-- Mix of wide, tall, and square cells for visual variety -->
-      <!-- Replace background divs with <img> tags when ready -->
-      <div class="sk w2"></div>
-      <div class="sk"></div>
-      <div class="sk"></div>
-      <div class="sk"></div>
-      <div class="sk h2"></div>
-      <div class="sk w2"></div>
-      <div class="sk"></div>
-      <div class="sk"></div>
-      <div class="sk"></div>
-      <div class="sk w2"></div>
-      <div class="sk"></div>
-    </div>
-  </section>
-
-  <!-- ── ABOUT ───────────────────────────────────────── -->
-  <section id="about">
-    <div class="section-head">
-      <span class="s-num">04</span>
-      <h2 class="s-title">About</h2>
-      <div class="s-rule"></div>
+<!-- ===================== WORK ===================== -->
+<section id="work" class="section">
+  <div class="wrap">
+    <div class="sheet-head reveal">
+      <span class="sheet-no">A‑01 / SELECTED WORK</span>
+      <span class="sheet-title">Selected Work</span>
+      <span class="sheet-note">Three studio projects spanning conceptual high-rise, residential site design, and interior lighting — modeled in Rhino and Revit.</span>
     </div>
 
+    <!-- Project 01 -->
+    <article class="project reveal">
+      <div class="pj-media" data-project="nevelson">
+        <span class="frame-no">A‑01.1</span>
+        <span class="reveal-over"></span>
+        <img src="images/LN_buildingview_1.jpg" alt="Physical study model of the Nevelson-inspired tower with cantilevered warm-toned floor plates">
+      </div>
+      <div class="pj-body">
+        <p class="pj-index">Project 01 — 2023</p>
+        <h3 class="pj-title">Louise Nevelson–Inspired Skyscraper &amp; Ground Design</h3>
+        <div class="pj-meta"><span class="chip">Mixed-Use</span><span class="chip">Conceptual</span><span class="chip">Studio</span></div>
+        <p class="pj-desc">A formal vocabulary extracted from a focused area of Nevelson's sculpture, translated into facade composition and ground-plane design — where artistic language and architectural function converge without either losing its integrity.</p>
+        <p class="pj-soft">Software — <b>Rhino · Hand drafting</b></p>
+        <button class="link-underline" data-project="nevelson"><span class="ln">View Project</span> <span class="arr">→</span></button>
+      </div>
+    </article>
+
+    <!-- Project 02 -->
+    <article class="project flip reveal">
+      <div class="pj-media" data-project="beaverlake">
+        <span class="frame-no">A‑02.1</span>
+        <span class="reveal-over"></span>
+        <img src="images/BLR_Project_1.jpg" alt="Beaver Lake Artist Retreat board — site plan and massing">
+      </div>
+      <div class="pj-body">
+        <p class="pj-index">Project 02 — 2024</p>
+        <h3 class="pj-title">Beaver Lake Artist Retreat</h3>
+        <div class="pj-meta"><span class="chip">Residential</span><span class="chip">Site Design</span><span class="chip">Studio</span></div>
+        <p class="pj-desc">A retreat campus along an existing Arkansas lakeside — weaving co-op studios, communal dining, individual cabins, and recreational space into a cohesive landscape shaped by the terrain and the rhythms of the creative life it was built to support.</p>
+        <p class="pj-soft">Software — <b>Rhino · Adobe Creative Cloud</b></p>
+        <button class="link-underline" data-project="beaverlake"><span class="ln">View Project</span> <span class="arr">→</span></button>
+      </div>
+    </article>
+
+    <!-- Project 03 -->
+    <article class="project reveal">
+      <div class="pj-media" data-project="lightinspace">
+        <span class="frame-no">A‑03.1</span>
+        <span class="reveal-over"></span>
+        <img src="images/Lighting_Systems_Project_3.png" alt="Reflected ceiling and lighting plan for the Light in Space interior project">
+      </div>
+      <div class="pj-body">
+        <p class="pj-index">Project 03 — 2026</p>
+        <h3 class="pj-title">Interior Architecture — Light in Space</h3>
+        <div class="pj-meta"><span class="chip">Interior</span><span class="chip">Lighting Systems</span><span class="chip">Studio</span></div>
+        <p class="pj-desc">An investigation of light as a design medium — choreographing brilliance, task illumination, and ambient wash within an existing building to transform how a space is felt, not just seen.</p>
+        <p class="pj-soft">Software — <b>Revit</b></p>
+        <button class="link-underline" data-project="lightinspace"><span class="ln">View Project</span> <span class="arr">→</span></button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== BY HAND ===================== -->
+<section id="hand" class="section" style="background:var(--ink-2);">
+  <div class="wrap">
+    <div class="sheet-head reveal">
+      <span class="sheet-no">A‑04 / BY HAND</span>
+      <span class="sheet-title">By Hand</span>
+      <span class="sheet-note">Sketching and drafting are where I think — not just document. The part of the process that lives before the screen: observation, intuition, and line.</span>
+    </div>
+    <div class="hand-grid" data-group="hand">
+      <figure class="hand-item tall reveal" data-src="images/LN_workingdrawing_perspectiveandentry.jpg" data-cap="Interior perspective — graphite">
+        <img src="images/LN_workingdrawing_perspectiveandentry.jpg" alt="Hand-drawn interior perspective in graphite" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Interior Perspective</span><span class="s">Graphite study</span></figcaption>
+      </figure>
+      <figure class="hand-item reveal d1" data-src="images/LN_workingdrawing_concepts.jpg" data-cap="Concept studies — graphite">
+        <img src="images/LN_workingdrawing_concepts.jpg" alt="Concept studies sheet, hand-drawn" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Concept Studies</span><span class="s">Working drawing</span></figcaption>
+      </figure>
+      <figure class="hand-item reveal d2" data-src="images/LN_workingdrawing_section.jpg" data-cap="Section — graphite">
+        <img src="images/LN_workingdrawing_section.jpg" alt="Hand-drawn building section" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Section</span><span class="s">Working drawing</span></figcaption>
+      </figure>
+      <figure class="hand-item reveal" data-src="images/LN_workingdrawing_elevation.jpg" data-cap="Elevation — graphite">
+        <img src="images/LN_workingdrawing_elevation.jpg" alt="Hand-drawn elevation" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Elevation</span><span class="s">Working drawing</span></figcaption>
+      </figure>
+      <figure class="hand-item reveal d1" data-src="images/LN_workingdrawing_plan.jpg" data-cap="Plan — graphite">
+        <img src="images/LN_workingdrawing_plan.jpg" alt="Hand-drawn plan" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Plan</span><span class="s">Working drawing</span></figcaption>
+      </figure>
+      <figure class="hand-item reveal d2" data-src="images/LN_ground_trace.jpg" data-cap="Ground plane — trace study">
+        <img src="images/LN_ground_trace.jpg" alt="Ground plane trace study" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Ground Plane</span><span class="s">Trace study</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SKETCHBOOK ===================== -->
+<section id="sketchbook" class="section">
+  <div class="wrap">
+    <div class="sheet-head reveal">
+      <span class="sheet-no">A‑05 / SKETCHBOOK</span>
+      <span class="sheet-title">Sketchbook</span>
+      <span class="sheet-note">Travel Week, 2025 — a continuous study drawn page to page, selected for departmental display.</span>
+    </div>
+
+    <p class="sub-label reveal">Travel Week — 2025 · drag or scroll horizontally →</p>
+    <div class="pano reveal" data-group="travel" id="travelPano"><!-- populated by JS --></div>
+
+    <p class="sub-label reveal" style="margin-top:clamp(44px,5vw,76px);">Studies</p>
+    <div class="sketch-grid two reveal" data-group="sketch" id="sketchGrid"><!-- populated by JS --></div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about" class="section" style="background:var(--ink-2);">
+  <div class="wrap">
+    <div class="sheet-head reveal">
+      <span class="sheet-no">A‑06 / ABOUT</span>
+      <span class="sheet-title">About</span>
+    </div>
     <div class="about-grid">
-      <div class="about-photo">
-        <!-- Replace with: <img src="images/portrait.jpg" alt="Caleb Oliva"> -->
-        <div class="placeholder">
-          <div class="ph-bar"></div>
-          <div class="ph-text">Portrait</div>
-          <div class="ph-bar"></div>
-        </div>
+      <div class="about-portrait reveal">
+        <img src="images/Portfolio_about_pic.jpg" alt="Portrait of Caleb Alexander Oliva at University of Arkansas graduation">
+        <span class="tag">Fayetteville, AR — May 2026</span>
       </div>
-      <div>
-        <div class="about-name">Caleb<br>Alexander Oliva</div>
-        <div class="about-bio">
-          <p>Originally from Tegucigalpa, Honduras, I grew up drawn to both creativity and systems — a tension that architecture resolves perfectly. The discipline, to me, is not about imposing form but about asking why, repeatedly and rigorously, until a design earns its shape through intention rather than assumption.</p>
+      <div class="about-text reveal d1">
+        <p class="about-lead">Originally from Tegucigalpa, Honduras, I grew up drawn to both creativity and systems — a tension that <em>architecture resolves perfectly.</em></p>
+        <div class="about-body">
+          <p>The discipline, to me, is not about imposing form but about asking why — repeatedly and rigorously — until a design earns its shape through intention rather than assumption.</p>
           <p>I work most naturally by hand. Sketching and marker rendering are where I think, not just document, and that tactile process informs how I approach every project regardless of medium.</p>
           <p>My instinct leans toward residential work and, especially, the transformation of existing spaces — renovation, conversion, adaptive reuse. There is something deeply compelling about a place already carrying history and use, and imagining it elevated: better light, better proportion, better purpose.</p>
           <p>Currently based in the Dallas–Fort Worth area, recently graduated from the University of Arkansas with a B.S. in Architecture, and actively looking to bring that design rigor into practice.</p>
         </div>
-        <div class="about-links">
-          <a href="mailto:caleboliva07@gmail.com" class="about-lnk">Email</a>
-          <a href="https://www.linkedin.com/in/caleb-oliva-a95145388/" target="_blank" class="about-lnk">LinkedIn</a>
-          <a href="caleb_oliva_resume.html" target="_blank" class="about-lnk">Résumé</a>
+        <div class="about-facts">
+          <div class="fact"><div class="k">Based in</div><div class="v">Frisco, TX · DFW</div></div>
+          <div class="fact"><div class="k">From</div><div class="v">Tegucigalpa, Honduras</div></div>
+          <div class="fact"><div class="k">Languages</div><div class="v">English · Spanish (fluent)</div></div>
+          <div class="fact"><div class="k">Focus</div><div class="v">Residential · Adaptive reuse</div></div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ── FOOTER ──────────────────────────────────────── -->
-  <footer>
-    <div class="ft-name">Caleb Oliva</div>
-    <div class="ft-center">
-      <a href="mailto:caleboliva07@gmail.com" class="ft-email">caleboliva07@gmail.com</a>
-      <span class="ft-copy">© 2026 Caleb Alexander Oliva · Frisco, TX</span>
+<!-- ===================== EXPERIENCE ===================== -->
+<section id="experience" class="section">
+  <div class="wrap">
+    <div class="sheet-head reveal">
+      <span class="sheet-no">A‑07 / EXPERIENCE</span>
+      <span class="sheet-title">Experience</span>
+      <span class="sheet-note">A mix of design exposure and the leadership and service roles that shaped how I work with people.</span>
     </div>
-    <div class="ft-links">
-      <a href="https://www.linkedin.com/in/caleb-oliva-a95145388/" target="_blank">LinkedIn</a>
-      <a href="mailto:caleboliva07@gmail.com">Contact</a>
+    <div class="exp-list reveal">
+      <div class="exp-row">
+        <div class="exp-yr">Intern</div>
+        <div class="exp-role">Architecture Intern<span>Designed an independent tiny-home project; shadowed design architects and a marker renderer across active studio work.</span></div>
+        <div class="exp-org">Parkhill Architecture</div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-yr">3 Years</div>
+        <div class="exp-role">ACE Mentorship Program<span>Architecture · Construction · Engineering mentorship with annual project showcases.</span></div>
+        <div class="exp-org">ACE Mentor Program</div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-yr">3 Summers</div>
+        <div class="exp-role">Summer Camp Counselor &amp; Team Lead<span>Led groups of campers across three summers in distinct leadership roles — logistics, group management, and daily program delivery.</span></div>
+        <div class="exp-org">Sky Ranch</div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-yr">Lead</div>
+        <div class="exp-role">Shift Lead<span>Opened and closed shifts, trained staff, and managed front-of-house operations.</span></div>
+        <div class="exp-org">Jersey Mike's</div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-yr">Café</div>
+        <div class="exp-role">Line Cook<span>Fast-paced café service with an emphasis on consistency and timing.</span></div>
+        <div class="exp-org">Life Time</div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-yr">Campus</div>
+        <div class="exp-role">House Boy<span>Supported daily operations for the Pi Beta Phi &amp; Chi Omega houses.</span></div>
+        <div class="exp-org">University of Arkansas</div>
+      </div>
     </div>
-  </footer>
+    <div class="reveal" style="margin-top:42px;">
+      <a href="resume_2026_OlivaCaleb.pdf" target="_blank" rel="noopener" class="btn">Download Full Résumé <span class="arr">↓</span></a>
+    </div>
+  </div>
+</section>
 
-  <script>
-    // Nav: add .scrolled class after 60px
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-  </script>
+<!-- ===================== SKILLS ===================== -->
+<section id="skills" class="section" style="background:var(--ink-2);">
+  <div class="wrap">
+    <div class="sheet-head reveal">
+      <span class="sheet-no">A‑08 / SKILLS</span>
+      <span class="sheet-title">Skills</span>
+      <span class="sheet-note">Hand skills first — they're the core. Software supports the thinking, never replaces it.</span>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-col">
+        <h4>By Hand</h4>
+        <ul>
+          <li class="primary"><span class="nm">Marker rendering</span><span class="lvl">Primary</span></li>
+          <li class="primary"><span class="nm">Hand drafting</span><span class="lvl">Primary</span></li>
+          <li><span class="nm">Sketching &amp; observation</span><span class="lvl">Core</span></li>
+          <li><span class="nm">Physical model-making</span><span class="lvl">Core</span></li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Software</h4>
+        <ul>
+          <li class="primary"><span class="nm">AutoCAD</span><span class="lvl">Strong</span></li>
+          <li class="primary"><span class="nm">Rhino</span><span class="lvl">Strong</span></li>
+          <li><span class="nm">Revit</span><span class="lvl">Proficient</span></li>
+          <li><span class="nm">Adobe Creative Cloud</span><span class="lvl">Proficient</span></li>
+          <li><span class="nm">Grasshopper</span><span class="lvl">Working</span></li>
+          <li><span class="nm">Twinmotion</span><span class="lvl">Working</span></li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Focus &amp; Languages</h4>
+        <ul>
+          <li><span class="nm">Residential design</span><span class="lvl">Focus</span></li>
+          <li><span class="nm">Adaptive reuse / renovation</span><span class="lvl">Focus</span></li>
+          <li><span class="nm">English</span><span class="lvl">Native</span></li>
+          <li class="primary"><span class="nm">Spanish</span><span class="lvl">Fluent</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="section">
+  <div class="wrap">
+    <p class="contact-eyebrow reveal">A‑09 / Get in touch</p>
+    <h2 class="contact-head reveal d1"><a href="mailto:caleboliva07@gmail.com">Let's build something.</a></h2>
+    <p class="contact-sub reveal d1">Open to architecture roles in the Dallas–Fort Worth area, with a focus on residential and adaptive-reuse work. Always glad to talk.</p>
+    <div class="contact-links reveal d2">
+      <a href="mailto:caleboliva07@gmail.com" class="btn solid">Email <span class="arr">→</span></a>
+      <a href="https://www.linkedin.com/in/caleb-oliva-a95145388/" target="_blank" rel="noopener" class="btn">LinkedIn <span class="arr">↗</span></a>
+      <a href="resume_2026_OlivaCaleb.pdf" target="_blank" rel="noopener" class="btn">Résumé <span class="arr">↓</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">Caleb&nbsp;Oliva<span>.</span></div>
+    <div class="foot-links">
+      <a href="mailto:caleboliva07@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/caleb-oliva-a95145388/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="resume_2026_OlivaCaleb.pdf" target="_blank" rel="noopener">Résumé</a>
+    </div>
+    <div class="foot-meta">© 2026 Caleb Alexander Oliva · Frisco, TX</div>
+  </div>
+</footer>
+
+<!-- ===================== PROJECT OVERLAY ===================== -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Project detail">
+  <button class="ov-close" id="ovClose" aria-label="Close project">Close ✕</button>
+  <div class="ov-inner" id="ovInner"></div>
+</div>
+
+<!-- ===================== IMAGE LIGHTBOX ===================== -->
+<div class="imgbox" id="imgbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="ov-close ib-close" id="ibClose" aria-label="Close image">Close ✕</button>
+  <button class="nav-btn prev" id="ibPrev" aria-label="Previous">‹</button>
+  <img id="ibImg" src="" alt="">
+  <button class="nav-btn next" id="ibNext" aria-label="Next">›</button>
+  <div class="ib-cap" id="ibCap"></div>
+  <div class="ib-count" id="ibCount"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA  ·  edit here to add/replace project images & copy
+   ============================================================ */
+const PROJECTS = {
+  nevelson:{
+    tag:'A‑01 / PROJECT 01 — 2023',
+    title:'Louise Nevelson–Inspired Skyscraper & Ground Design',
+    meta:['Mixed-Use','Conceptual','Studio'],
+    software:'Rhino · Hand drafting',
+    process:'Beginning with a tightly cropped region of a Louise Nevelson sculpture, the studio asked how an artistic logic of stacked, shadowed, rectilinear forms could become a building. The result reads the tower and its ground plane as one continuous composition — a glazed shaft set against a rhythm of cantilevered, warm-toned plates, grounded by a designed approach that carries the same vocabulary into the landscape.',
+    images:[
+      ['images/LN_buildingview_1.jpg','Study model — tower elevation'],
+      ['images/LN_buildingview_2.jpg','Study model — detail'],
+      ['images/LN_buildingview_3.jpg','Study model — context'],
+      ['images/LN_collage.jpg','Concept collage'],
+      ['images/LN_workingdrawing_perspectiveandentry.jpg','Interior perspective & entry — graphite'],
+      ['images/LN_workingdrawing_section.jpg','Section'],
+      ['images/LN_workingdrawing_elevation.jpg','Elevation'],
+      ['images/LN_workingdrawing_plan.jpg','Plan'],
+      ['images/LN_groundplane_1.jpg','Ground plane study I'],
+      ['images/LN_groundplane_2.jpg','Ground plane study II'],
+      ['images/LN_ground_approach.jpg','Approach'],
+      ['images/LN_ground_diagram.jpg','Ground diagram']
+    ]
+  },
+  beaverlake:{
+    tag:'A‑02 / PROJECT 02 — 2024',
+    title:'Beaver Lake Artist Retreat',
+    meta:['Residential','Site Design','Studio'],
+    software:'Rhino · Adobe Creative Cloud',
+    process:'Sited along an existing Arkansas lakeside, the retreat gathers co-op studios, communal dining, individual cabins, and recreational space into a single landscape. Rather than clear and impose, the plan follows the terrain — letting topography, sightlines, and the daily rhythm of making and resting set the position of each building.',
+    images:[
+      ['images/BLR_Project_1.jpg','Board 01'],
+      ['images/BLR_Project_2.jpg','Massing model'],
+      ['images/BLR_Project_3.jpg','Board 03'],
+      ['images/BLR_Project_4.jpg','Board 04'],
+      ['images/BLR_Project_5.jpg','Board 05'],
+      ['images/BLR_Project_6.jpg','Board 06'],
+      ['images/BLR_Project_7.jpg','Board 07'],
+      ['images/BLR_Project_8.jpg','Board 08'],
+      ['images/BLR_Project_9.jpg','Board 09'],
+      ['images/BLR_Project_10.jpg','Board 10']
+    ]
+  },
+  lightinspace:{
+    tag:'A‑03 / PROJECT 03 — 2026',
+    title:'Interior Architecture — Light in Space',
+    meta:['Interior','Lighting Systems','Studio'],
+    software:'Revit',
+    process:'A Revit-based study treating light itself as the medium of design. Within an existing building, the project choreographs brilliance, task illumination, and ambient wash — using reflected ceiling plans, fixture layouts, and renderings to test how a space is felt, not just seen.',
+    images:[
+      ['images/Lighting_Systems_Project_3.png','Reflected ceiling / lighting plan'],
+      ['images/Lighting_Systems_Project_1.png','Lighting study 01'],
+      ['images/Lighting_Systems_Project_2.png','Lighting study 02'],
+      ['images/Lighting_Systems_Project_4.png','Lighting study 04'],
+      ['images/Lighting_Systems_Project_5.png','Lighting study 05'],
+      ['images/Lighting_Systems_Project_6.png','Lighting study 06']
+    ]
+  }
+};
+
+/* Travel Week panorama (continuous, in order) + sketchbook studies */
+const TRAVEL = Array.from({length:16},(_,i)=>['images/NM_travelweek_'+(i+1)+'.jpg','Travel Week — 2025 · panel '+(i+1)]);
+const SKETCH = [
+  ['images/Sketchbook_1.jpg','Sketchbook study'],
+  ['images/Sketchbook_2.jpg','Sketchbook study']
+];
+
+/* ============================================================
+   BUILD SKETCHBOOK
+   ============================================================ */
+(function(){
+  const pano=document.getElementById('travelPano');
+  TRAVEL.forEach(([src,cap])=>{
+    const fig=document.createElement('figure');
+    fig.dataset.src=src; fig.dataset.cap=cap;
+    fig.innerHTML='<img src="'+src+'" alt="'+cap+'" loading="lazy" draggable="false">';
+    pano.appendChild(fig);
+  });
+  const grid=document.getElementById('sketchGrid');
+  SKETCH.forEach(([src,cap])=>{
+    const fig=document.createElement('figure');
+    fig.className='sk-item'; fig.dataset.src=src; fig.dataset.cap=cap;
+    fig.innerHTML='<img src="'+src+'" alt="'+cap+'" loading="lazy">';
+    grid.appendChild(fig);
+  });
+
+  /* drag-to-scroll for the strip; distinguishes a drag from a click */
+  let down=false,sx=0,sl=0,moved=false;
+  pano.addEventListener('pointerdown',e=>{ down=true; moved=false; sx=e.clientX; sl=pano.scrollLeft; });
+  pano.addEventListener('pointermove',e=>{ if(!down)return; const dx=e.clientX-sx; if(Math.abs(dx)>6){moved=true; pano.classList.add('dragging');} pano.scrollLeft=sl-dx; });
+  const end=()=>{ down=false; pano.classList.remove('dragging'); };
+  pano.addEventListener('pointerup',end); pano.addEventListener('pointerleave',end);
+  pano.addEventListener('click',e=>{ if(moved){ e.stopPropagation(); e.preventDefault(); } },true);
+})();
+
+/* ============================================================
+   NAV: scroll state + mobile menu
+   ============================================================ */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>50),{passive:true});
+const navToggle=document.getElementById('navToggle'), navLinks=document.getElementById('navLinks');
+navToggle.addEventListener('click',()=>{
+  const open=navLinks.classList.toggle('open');
+  navToggle.setAttribute('aria-expanded',open);
+  navToggle.textContent=open?'Close':'Menu';
+});
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  navLinks.classList.remove('open'); navToggle.textContent='Menu'; navToggle.setAttribute('aria-expanded',false);
+}));
+
+/* ============================================================
+   SCROLL REVEAL + image reveal-over
+   ============================================================ */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.14, rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+const mio=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('shown'); mio.unobserve(e.target); } });
+},{threshold:.3});
+document.querySelectorAll('.pj-media').forEach(el=>mio.observe(el));
+
+/* ============================================================
+   HERO PARALLAX (gentle)
+   ============================================================ */
+const ghost=document.querySelector('.hero-ghost');
+addEventListener('scroll',()=>{
+  if(scrollY<window.innerHeight){ ghost.style.transform='translateY('+scrollY*0.18+'px)'; }
+},{passive:true});
+
+/* ============================================================
+   PROJECT OVERLAY
+   ============================================================ */
+const overlay=document.getElementById('overlay'), ovInner=document.getElementById('ovInner'), ovClose=document.getElementById('ovClose');
+function openProject(key){
+  const p=PROJECTS[key]; if(!p) return;
+  ovInner.innerHTML=
+    '<p class="ov-tag">'+p.tag+'</p>'+
+    '<h2 class="ov-title">'+p.title+'</h2>'+
+    '<div class="ov-meta">'+p.meta.map(m=>'<span class="chip">'+m+'</span>').join('')+'</div>'+
+    '<p class="ov-process">'+p.process+'</p>'+
+    '<p class="ov-soft">Software — <b>'+p.software+'</b></p>'+
+    '<div class="ov-images">'+p.images.map(([s,c])=>'<figure><img src="'+s+'" alt="'+c+'" loading="lazy"><figcaption>'+c+'</figcaption></figure>').join('')+'</div>';
+  overlay.classList.add('open'); document.body.style.overflow='hidden'; overlay.scrollTop=0;
+}
+function closeProject(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
+document.querySelectorAll('[data-project]').forEach(el=>el.addEventListener('click',()=>openProject(el.dataset.project)));
+ovClose.addEventListener('click',closeProject);
+overlay.addEventListener('click',e=>{ if(e.target===overlay) closeProject(); });
+
+/* ============================================================
+   IMAGE LIGHTBOX (By Hand + Sketchbook)
+   ============================================================ */
+const imgbox=document.getElementById('imgbox'), ibImg=document.getElementById('ibImg'),
+      ibCap=document.getElementById('ibCap'), ibCount=document.getElementById('ibCount');
+let ibGroup=[], ibIndex=0;
+function buildGroup(groupName){
+  return [...document.querySelectorAll('[data-group="'+groupName+'"] [data-src]')]
+         .map(el=>({src:el.dataset.src, cap:el.dataset.cap||''}));
+}
+function showImg(i){
+  ibIndex=(i+ibGroup.length)%ibGroup.length;
+  const o=ibGroup[ibIndex];
+  ibImg.src=o.src; ibImg.alt=o.cap; ibCap.textContent=o.cap;
+  ibCount.textContent=(ibIndex+1)+' / '+ibGroup.length;
+}
+function openImg(groupName,src){
+  ibGroup=buildGroup(groupName);
+  const start=ibGroup.findIndex(o=>o.src===src);
+  showImg(start<0?0:start);
+  imgbox.classList.add('open'); document.body.style.overflow='hidden';
+}
+document.querySelectorAll('[data-group]').forEach(group=>{
+  group.addEventListener('click',e=>{
+    const item=e.target.closest('[data-src]'); if(!item) return;
+    openImg(group.dataset.group, item.dataset.src);
+  });
+});
+document.getElementById('ibClose').addEventListener('click',()=>{ imgbox.classList.remove('open'); document.body.style.overflow=''; });
+document.getElementById('ibNext').addEventListener('click',()=>showImg(ibIndex+1));
+document.getElementById('ibPrev').addEventListener('click',()=>showImg(ibIndex-1));
+imgbox.addEventListener('click',e=>{ if(e.target===imgbox){ imgbox.classList.remove('open'); document.body.style.overflow=''; } });
+
+/* keyboard */
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeProject(); imgbox.classList.remove('open'); document.body.style.overflow=''; }
+  if(imgbox.classList.contains('open')){
+    if(e.key==='ArrowRight') showImg(ibIndex+1);
+    if(e.key==='ArrowLeft') showImg(ibIndex-1);
+  }
+});
+
+/* current year in footer is hard-set to 2026; update if needed */
+</script>
 </body>
 </html>
