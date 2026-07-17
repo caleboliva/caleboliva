@@ -223,10 +223,10 @@ nav.scrolled{
 }
 .pj-media{
   position:relative; overflow:hidden; background:var(--ink-2);
-  aspect-ratio:4/3; cursor:pointer;
+  cursor:pointer;
 }
 .pj-media img{
-  width:100%; height:100%; object-fit:cover;
+  width:100%; height:auto; display:block;
   transition:transform 1.1s var(--ease), filter 1.1s var(--ease);
   filter:saturate(.92);
 }
@@ -487,7 +487,7 @@ footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
   <a class="brand" href="#hero">Caleb&nbsp;Oliva<span>.</span></a>
   <ul class="nav-links" id="navLinks">
     <li><a href="#work">Work</a></li>
-    <li><a href="#hand">By Hand</a></li>
+    <li><a href="#hand">By Hand &amp; Studies</a></li>
     <li><a href="#sketchbook">Sketchbook</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
@@ -530,7 +530,7 @@ footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
       <div class="pj-media" data-project="nevelson">
         <span class="frame-no">A‑01.1</span>
         <span class="reveal-over"></span>
-        <img src="images/LN_buildingview_1.jpg" alt="Physical study model of the Nevelson-inspired tower with cantilevered warm-toned floor plates">
+        <img src="images/LN_workingdrawing_section.jpg" alt="Hand-drawn section of the Nevelson-inspired tower">
       </div>
       <div class="pj-body">
         <p class="pj-index">Project 01 — 2023</p>
@@ -547,7 +547,7 @@ footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
       <div class="pj-media" data-project="beaverlake">
         <span class="frame-no">A‑02.1</span>
         <span class="reveal-over"></span>
-        <img src="images/BLR_Project_1.jpg" alt="Beaver Lake Artist Retreat board — site plan and massing">
+        <img src="images/BLR_Project_5_sheet.jpg" alt="Beaver Lake Artist Retreat sheet — site plan">
       </div>
       <div class="pj-body">
         <p class="pj-index">Project 02 — 2024</p>
@@ -564,7 +564,7 @@ footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
       <div class="pj-media" data-project="lightinspace">
         <span class="frame-no">A‑03.1</span>
         <span class="reveal-over"></span>
-        <img src="images/Lighting_Systems_Project_3.png" alt="Reflected ceiling and lighting plan for the Light in Space interior project">
+        <img src="images/Lighting_Systems_Project_5.png" alt="Lighting rendering for the Light in Space interior project">
       </div>
       <div class="pj-body">
         <p class="pj-index">Project 03 — 2026</p>
@@ -578,38 +578,46 @@ footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
   </div>
 </section>
 
-<!-- ===================== BY HAND ===================== -->
+<!-- ===================== BY HAND & STUDIES ===================== -->
 <section id="hand" class="section" style="background:var(--ink-2);">
   <div class="wrap">
     <div class="sheet-head reveal">
-      <span class="sheet-no">A‑04 / BY HAND</span>
-      <span class="sheet-title">By Hand</span>
+      <span class="sheet-no">A‑04 / BY HAND &amp; STUDIES</span>
+      <span class="sheet-title">By Hand &amp; Studies</span>
       <span class="sheet-note">Sketching and drafting are where I think — not just document. The part of the process that lives before the screen: observation, intuition, and line.</span>
     </div>
     <div class="hand-grid" data-group="hand">
-      <figure class="hand-item tall reveal" data-src="images/LN_workingdrawing_perspectiveandentry.jpg" data-cap="Interior perspective — graphite">
-        <img src="images/LN_workingdrawing_perspectiveandentry.jpg" alt="Hand-drawn interior perspective in graphite" loading="lazy">
-        <figcaption class="hand-cap"><span class="t">Interior Perspective</span><span class="s">Graphite study</span></figcaption>
+      <figure class="hand-item reveal" data-src="images/Sketchbook_1_alt.jpg" data-cap="Toucan — painted study">
+        <img src="images/Sketchbook_1_alt.jpg" alt="Painted study of a toucan" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Toucan</span><span class="s">Painted study</span></figcaption>
       </figure>
-      <figure class="hand-item reveal d1" data-src="images/LN_workingdrawing_concepts.jpg" data-cap="Concept studies — graphite">
-        <img src="images/LN_workingdrawing_concepts.jpg" alt="Concept studies sheet, hand-drawn" loading="lazy">
-        <figcaption class="hand-cap"><span class="t">Concept Studies</span><span class="s">Working drawing</span></figcaption>
+      <figure class="hand-item reveal d1" data-src="images/Sketchbook_3_sheet.jpg" data-cap="Building study — marker rendering">
+        <img src="images/Sketchbook_3_sheet.jpg" alt="Marker rendering of a building study" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Building Study</span><span class="s">Marker rendering</span></figcaption>
       </figure>
-      <figure class="hand-item reveal d2" data-src="images/LN_workingdrawing_section.jpg" data-cap="Section — graphite">
-        <img src="images/LN_workingdrawing_section.jpg" alt="Hand-drawn building section" loading="lazy">
-        <figcaption class="hand-cap"><span class="t">Section</span><span class="s">Working drawing</span></figcaption>
+      <figure class="hand-item reveal d2" data-src="images/Sketchbook_4_sheet.jpg" data-cap="Tower study — marker rendering">
+        <img src="images/Sketchbook_4_sheet.jpg" alt="Marker rendering of a tower study" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Tower Study</span><span class="s">Marker rendering</span></figcaption>
       </figure>
-      <figure class="hand-item reveal" data-src="images/LN_workingdrawing_elevation.jpg" data-cap="Elevation — graphite">
-        <img src="images/LN_workingdrawing_elevation.jpg" alt="Hand-drawn elevation" loading="lazy">
-        <figcaption class="hand-cap"><span class="t">Elevation</span><span class="s">Working drawing</span></figcaption>
+      <figure class="hand-item reveal" data-src="images/Sketchbook_2_sheet.jpg" data-cap="House perspective — graphite">
+        <img src="images/Sketchbook_2_sheet.jpg" alt="Graphite perspective sketch of a house" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">House Perspective</span><span class="s">Graphite</span></figcaption>
       </figure>
-      <figure class="hand-item reveal d1" data-src="images/LN_workingdrawing_plan.jpg" data-cap="Plan — graphite">
-        <img src="images/LN_workingdrawing_plan.jpg" alt="Hand-drawn plan" loading="lazy">
-        <figcaption class="hand-cap"><span class="t">Plan</span><span class="s">Working drawing</span></figcaption>
+      <figure class="hand-item reveal d1" data-src="images/Sketchbook_5_sheet.jpg" data-cap="Building section — digital rendering">
+        <img src="images/Sketchbook_5_sheet.jpg" alt="Digital rendering of a building section" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Building Section</span><span class="s">Digital rendering</span></figcaption>
       </figure>
-      <figure class="hand-item reveal d2" data-src="images/LN_ground_trace.jpg" data-cap="Ground plane — trace study">
-        <img src="images/LN_ground_trace.jpg" alt="Ground plane trace study" loading="lazy">
-        <figcaption class="hand-cap"><span class="t">Ground Plane</span><span class="s">Trace study</span></figcaption>
+      <figure class="hand-item reveal d2" data-src="images/Sketchbook_1_sheet.jpg" data-cap="Steadfast Coffee Co. — sketch & digital rendering">
+        <img src="images/Sketchbook_1_sheet.jpg" alt="Steadfast Coffee Co. concept board, sketch and digital rendering" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Steadfast Coffee Co.</span><span class="s">Sketch &amp; digital rendering</span></figcaption>
+      </figure>
+      <figure class="hand-item wide reveal" data-src="images/Sketchbook_2.jpg" data-cap="The Barn — elevations & plan, marker and colored pencil">
+        <img src="images/Sketchbook_2.jpg" alt="The Barn, elevations and plan, marker and colored pencil" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">The Barn — Elevations &amp; Plan</span><span class="s">Marker &amp; colored pencil</span></figcaption>
+      </figure>
+      <figure class="hand-item reveal d1" data-src="images/Sketchbook_1.jpg" data-cap="Bedroom interior — digital rendering">
+        <img src="images/Sketchbook_1.jpg" alt="Digital rendering of a bedroom interior" loading="lazy">
+        <figcaption class="hand-cap"><span class="t">Bedroom Interior</span><span class="s">Digital rendering</span></figcaption>
       </figure>
     </div>
   </div>
@@ -626,9 +634,6 @@ footer{ border-top:1px solid var(--line); padding:46px var(--gutter); }
 
     <p class="sub-label reveal">Travel Week — 2025 · drag or scroll horizontally →</p>
     <div class="pano reveal" data-group="travel" id="travelPano"><!-- populated by JS --></div>
-
-    <p class="sub-label reveal" style="margin-top:clamp(44px,5vw,76px);">Studies</p>
-    <div class="sketch-grid two reveal" data-group="sketch" id="sketchGrid"><!-- populated by JS --></div>
   </div>
 </section>
 
@@ -810,14 +815,18 @@ const PROJECTS = {
       ['images/LN_buildingview_2.jpg','Study model — detail'],
       ['images/LN_buildingview_3.jpg','Study model — context'],
       ['images/LN_collage.jpg','Concept collage'],
+      ['images/LN_workingdrawing_concepts.jpg','Concept studies — graphite'],
       ['images/LN_workingdrawing_perspectiveandentry.jpg','Interior perspective & entry — graphite'],
       ['images/LN_workingdrawing_section.jpg','Section'],
       ['images/LN_workingdrawing_elevation.jpg','Elevation'],
       ['images/LN_workingdrawing_plan.jpg','Plan'],
+      ['images/LN_workingdrawing_ground.jpg','Ground plane — public/private zoning diagram'],
       ['images/LN_groundplane_1.jpg','Ground plane study I'],
       ['images/LN_groundplane_2.jpg','Ground plane study II'],
       ['images/LN_ground_approach.jpg','Approach'],
-      ['images/LN_ground_diagram.jpg','Ground diagram']
+      ['images/LN_ground_diagram.jpg','Ground diagram'],
+      ['images/LN_ground_trace.jpg','Ground plane — trace study'],
+      ['images/LN_ground_diagram_withtrace.jpg','Ground diagram with trace overlay']
     ]
   },
   beaverlake:{
@@ -828,13 +837,21 @@ const PROJECTS = {
     process:'Sited along an existing Arkansas lakeside, the retreat gathers co-op studios, communal dining, individual cabins, and recreational space into a single landscape. Rather than clear and impose, the plan follows the terrain — letting topography, sightlines, and the daily rhythm of making and resting set the position of each building.',
     images:[
       ['images/BLR_Project_1.jpg','Board 01'],
+      ['images/BLR_Project_1_sheet.jpg','Sheet 01'],
       ['images/BLR_Project_2.jpg','Massing model'],
+      ['images/BLR_Project_2_sheet.jpg','Sheet 02'],
       ['images/BLR_Project_3.jpg','Board 03'],
+      ['images/BLR_Project_3_sheet.jpg','Sheet 03'],
       ['images/BLR_Project_4.jpg','Board 04'],
+      ['images/BLR_Project_4_sheet.jpg','Sheet 04'],
       ['images/BLR_Project_5.jpg','Board 05'],
+      ['images/BLR_Project_5_sheet.jpg','Sheet 05'],
       ['images/BLR_Project_6.jpg','Board 06'],
+      ['images/BLR_Project_6_sheet.jpg','Sheet 06'],
       ['images/BLR_Project_7.jpg','Board 07'],
+      ['images/BLR_Project_7_sheet.jpg','Sheet 07'],
       ['images/BLR_Project_8.jpg','Board 08'],
+      ['images/BLR_Project_8_sheet.jpg','Sheet 08'],
       ['images/BLR_Project_9.jpg','Board 09'],
       ['images/BLR_Project_10.jpg','Board 10']
     ]
@@ -848,6 +865,7 @@ const PROJECTS = {
     images:[
       ['images/Lighting_Systems_Project_3.png','Reflected ceiling / lighting plan'],
       ['images/Lighting_Systems_Project_1.png','Lighting study 01'],
+      ['images/Lighting_Systems_Project_1_sheet.jpg','Lighting sheet 01'],
       ['images/Lighting_Systems_Project_2.png','Lighting study 02'],
       ['images/Lighting_Systems_Project_4.png','Lighting study 04'],
       ['images/Lighting_Systems_Project_5.png','Lighting study 05'],
@@ -856,12 +874,8 @@ const PROJECTS = {
   }
 };
 
-/* Travel Week panorama (continuous, in order) + sketchbook studies */
+/* Travel Week panorama (continuous, in order) */
 const TRAVEL = Array.from({length:16},(_,i)=>['images/NM_travelweek_'+(i+1)+'.jpg','Travel Week — 2025 · panel '+(i+1)]);
-const SKETCH = [
-  ['images/Sketchbook_1.jpg','Sketchbook study'],
-  ['images/Sketchbook_2.jpg','Sketchbook study']
-];
 
 /* ============================================================
    BUILD SKETCHBOOK
@@ -873,13 +887,6 @@ const SKETCH = [
     fig.dataset.src=src; fig.dataset.cap=cap;
     fig.innerHTML='<img src="'+src+'" alt="'+cap+'" loading="lazy" draggable="false">';
     pano.appendChild(fig);
-  });
-  const grid=document.getElementById('sketchGrid');
-  SKETCH.forEach(([src,cap])=>{
-    const fig=document.createElement('figure');
-    fig.className='sk-item'; fig.dataset.src=src; fig.dataset.cap=cap;
-    fig.innerHTML='<img src="'+src+'" alt="'+cap+'" loading="lazy">';
-    grid.appendChild(fig);
   });
 
   /* drag-to-scroll for the strip; distinguishes a drag from a click */
